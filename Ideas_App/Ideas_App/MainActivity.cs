@@ -6,6 +6,7 @@ using Android.Support.Design.Widget;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using System.Collections.Generic;
 
 namespace Ideas_App
 {
@@ -13,27 +14,48 @@ namespace Ideas_App
     public class MainActivity : AppCompatActivity
     {
 
-        TextView txtNumber;
-        int number;
-        
+        TextView titleTxt, descTxt;
+        //int number;
+        ListView mIdeasView;
+
+        public List<string> titles = new List<string>();
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
 
-            txtNumber = FindViewById<TextView>(Resource.Id.txtDisplay);
+            titleTxt = FindViewById<TextView>(Resource.Id.titleText);
+            descTxt = FindViewById<TextView>(Resource.Id.descriptionText);
 
-            FindViewById<Button>(Resource.Id.bttnIncrement).Click += (o,e) =>
-                txtNumber.Text = (++number).ToString();
+            titles.Add("Test Title" + " \n \n" + "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque risus dolor, commodo accumsan ex non, fermentum porta purus. " +
+                "Aenean justo ex, dignissim id finibus non, luctus nec elit. ");
 
-            FindViewById<Button>(Resource.Id.bttnDecrement).Click += (o, e) =>
-                txtNumber.Text = (--number).ToString();
+            FindViewById<Button>(Resource.Id.createIdeaButton).Click += (o, e) =>
+               AddIdea(titleTxt.Text, descTxt.Text);
+           
 
-            Android.Support.V7.Widget.Toolbar toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
-            SetSupportActionBar(toolbar);
+            mIdeasView = FindViewById<ListView>(Resource.Id.ideaList);
 
-            FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.fab);
-            fab.Click += FabOnClick;
+            mIdeasView.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleListItem1, titles);
+
+
+            //txtNumber = FindViewById<TextView>(Resource.Id.txtDisplay);
+
+            //FindViewById<Button>(Resource.Id.bttnDecrement).Click += (o, e) =>
+            //    txtNumber.Text = (--number).ToString();
+
+
+        }
+
+        public void AddIdea(string _title, string _description)
+        {
+            titles.Add(_title + " \n \n" +  _description);
+            mIdeasView.Adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleListItem1, titles);
+
+            titleTxt.Text = null;
+            descTxt.Text = null;
+
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
